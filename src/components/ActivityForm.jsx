@@ -44,11 +44,19 @@ function ActivityForm({ onAddActivity }) {
   return (
     <div>
      
+     <div className="weather">
+  {weather ? (
+    <>
+      <h1>Weather in {weather.name}</h1>
       <p>
-        {weather
-          ? `Weather in ${weather.name}: ${weather.main.temp}°C, ${weather.weather[0].description}`
-          : 'No weather data available'}
+        <span>{weather.main.temp}°C</span>, {weather.weather[0].description}
       </p>
+    </>
+  ) : (
+    'No weather data available'
+  )}
+</div>
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
