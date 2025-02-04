@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function ActivityForm({ onAddActivity }) {
+function ActivityForm({ onAddActivity, activity, onCancel }) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [location, setLocation] = useState('');
   const [weather, setWeather] = useState(null);
 
+  useEffect(() => {
+    if (activity) {
+      setName(activity.name);
+      setDate(activity.date);
+      setLocation(activity.location);
+    }
+  }, [activity]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (name && date && location) {
-      onAddActivity({ name, date, location });
+      const newActivity = { ...activity, name, date, location };
+      onAddActivity(newActivity);
       setName('');
       setDate('');
       setLocation('');
@@ -21,7 +30,7 @@ function ActivityForm({ onAddActivity }) {
 
   useEffect(() => {
     const fetchWeatherData = async () => {
-      if (!location) return; // Avoid unnecessary API calls if location is empty
+      if (!location) return;
 
       try {
         const response = await fetch(
@@ -34,28 +43,27 @@ function ActivityForm({ onAddActivity }) {
         setWeather(data);
       } catch (error) {
         console.error('Error fetching weather:', error);
-        setWeather(null); // Handle errors gracefully
+        setWeather(null);
       }
     };
 
     fetchWeatherData();
-  }, [location]); // Re-fetch when location changes
+  }, [location]);
 
   return (
     <div>
-     
-     <div className="weather">
-  {weather ? (
-    <>
-      <h1>Weather in {weather.name}</h1>
-      <p>
-        <span>{weather.main.temp}°C</span>, {weather.weather[0].description}
-      </p>
-    </>
-  ) : (
-    'No weather data available'
-  )}
-</div>
+      <div className="weather">
+        {weather ? (
+          <>
+            <h1>Weather in {weather.name}</h1>
+            <p>
+              <span>{weather.main.temp}°C</span>, {weather.weather[0].description}
+            </p>
+          </>
+        ) : (
+          'No weather data available'
+        )}
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -85,7 +93,8 @@ function ActivityForm({ onAddActivity }) {
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
-        <button type="submit">Add Activity</button>
+        <button type="submit">{activity ? 'Save Changes' : 'Add Activity'}</button>
+        {activity && <button type="button" onClick={onCancel}>Cancel</button>}
       </form>
     </div>
   );
@@ -93,6 +102,13 @@ function ActivityForm({ onAddActivity }) {
 
 ActivityForm.propTypes = {
   onAddActivity: PropTypes.func.isRequired,
+  activity: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    date: PropTypes.string,
+    location: PropTypes.string,
+  }),
+  onCancel: PropTypes.func,
 };
 
 export default ActivityForm;

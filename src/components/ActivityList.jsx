@@ -9,7 +9,7 @@ function ActivityList({ activities, onEditActivity, onDeleteActivity }) {
         <ActivityItem 
           key={activity.id} 
           activity={activity} 
-          onEdit={() => onEditActivity(activity.id)} 
+          onEdit={() => onEditActivity(activity)} 
           onDelete={() => onDeleteActivity(activity.id)} 
         />
       ))}

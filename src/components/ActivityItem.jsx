@@ -1,6 +1,7 @@
+import  { memo } from 'react';
 import PropTypes from 'prop-types';
 
-function ActivityItem({ activity, onEdit, onDelete }) { 
+const ActivityItem = memo(function ActivityItem({ activity, onEdit, onDelete }) {
   return (
     <li>
       <h3>{activity.name}</h3>
@@ -10,11 +11,11 @@ function ActivityItem({ activity, onEdit, onDelete }) {
       <button onClick={() => onDelete(activity.id)}>Delete</button>
     </li>
   );
-}
+});
 
 ActivityItem.propTypes = {
   activity: PropTypes.shape({
-    id: PropTypes.string.isRequired, // Assuming you'll add IDs to activities
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     date: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
